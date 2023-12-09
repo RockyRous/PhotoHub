@@ -8,6 +8,22 @@ import psycopg2
 # Создаем приложение Flask
 app = flask.Flask(__name__)
 
+# Авторизация
+@app.route('/login')
+def login():
+    return 'Login'
+
+
+@app.route('/signup')
+def signup():
+    return 'Signup'
+
+
+@app.route('/logout')
+def logout():
+    return 'Logout'
+# Конец Авторизация
+
 
 @app.route("/")
 def index():
@@ -26,6 +42,10 @@ def index():
 
 @app.route("/add-photo", methods=["POST"])
 def add_photo():
+    """
+    Add a photo to the database
+    :return str: Photo added
+    """
     # Получаем данные из формы
     title = request.form["title"]
     description = request.form["description"]
@@ -49,6 +69,10 @@ def add_photo():
 
 @app.route("/delete-photo/<id>", methods=["POST"])
 def delete_photo():
+    """
+    delite a photo to the database
+    :return str: Photo delite
+    """
     # Получаем идентификатор фотографии
     id = request.form["id"]
 
@@ -67,6 +91,10 @@ def delete_photo():
 
 @app.route("/edit-photo/", methods=["POST"])
 def edit_photo():
+    """
+    change a photo to the database
+    :return str: Photo changed
+    """
     # Получаем данные из формы
     title = request.form.get("title")
     image_path = request.form.get("image_path")
@@ -78,6 +106,8 @@ def edit_photo():
 
     cursor.execute("UPDATE photo SET title = %s, image_path = %s WHERE id = %s", (title, image_path, id))
     conn.commit()
+
+    cursor.close()
 
     # Возвращаем сообщение об успехе
     return "Запись обновлена!"

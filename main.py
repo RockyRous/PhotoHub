@@ -34,35 +34,53 @@ def add_photo():
     # Добавляем запись в таблицу
     conn = psycopg2.connect(**db.conn_param)
     cursor = conn.cursor()
-    print('connect successful')
+
     cursor.execute(
         "INSERT INTO photo (author_id, title, description, image_path) VALUES (1, %s, %s, %s)",
         (title, description, image_path),
     )
-    print('insert successful')
     conn.commit()
-    print('commit successful')
+
+    cursor.close()
 
     # Возвращаем сообщение об успехе
     return 'Операция произведена'
 
 
 @app.route("/delete-photo/<id>", methods=["POST"])
-def delete_photo(id):
+def delete_photo():
     # Получаем идентификатор фотографии
     id = request.form["id"]
-    print('open delete_photo')
+
     # Удаляем запись из таблицы
     conn = psycopg2.connect(**db.conn_param)
     cursor = conn.cursor()
-    print('connect successful')
+
     cursor.execute("DELETE FROM photo WHERE id = %s", (id,))
-    print('delete successful')
     conn.commit()
-    print('commit successful')
+
+    cursor.close()
 
     # Возвращаем сообщение об успехе
     return "Фотография удалена!"
+
+
+@app.route("/edit-photo/", methods=["POST"])
+def edit_photo():
+    # Получаем данные из формы
+    title = request.form.get("title")
+    image_path = request.form.get("image_path")
+    id = request.form["id"]
+
+    # Обновляем запись в базе данных
+    conn = psycopg2.connect(**db.conn_param)
+    cursor = conn.cursor()
+
+    cursor.execute("UPDATE photo SET title = %s, image_path = %s WHERE id = %s", (title, image_path, id))
+    conn.commit()
+
+    # Возвращаем сообщение об успехе
+    return "Запись обновлена!"
 
 
 # Запускаем приложение Flask

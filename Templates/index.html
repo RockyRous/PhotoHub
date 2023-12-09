@@ -6,27 +6,36 @@
 <body>
     <h1>Фотогалерея</h1>
     <ul>
+
+        <!-- Вывод содержимого таблицы Photo       -->
         {% for photo in photos %}
             <li>
-                <!-- Приходит список -->
                 <img src="{{ photo[4] }}" width="400" height="400">
                 <h2>{{ photo[2] }}</h2>
                 <h3>{{ photo[3] }}</h3>
                 <h3>{{ photo[1] }}</h3>
                 <h3>{{ photo }}</h3>
 
-                <!-- Я провозился с этим не меньше 2х часов.
-                Оно работает, но я даже не до конца понимаю за счет чего -->
+                <!-- Удаление из базы данных -->
                 <form action="/delete-photo/{{ photo[0] }}" method="post">
                     <input type="hidden" name="id" value="{{ photo[0] }}">
                     <input type="submit" value="Удалить">
                 </form>
 
+                <!-- Редактирование записи -->
+                <form action="/edit-photo/" method="post">
+                    <input type="text" name="title" value="{{ photo[2] }}">
+                    <input type="text" name="image_path" value="{{ photo[4] }}">
+                    <input type="hidden" name="id" value="{{ photo[0] }}">
+                    <input type="submit" value="Сохранить">
+                </form>
+
             </li>
         {% endfor %}
     </ul>
-<h1>Добавление фотографии</h1>
 
+    <!--  Создание новой записи в бд  -->
+    <h1>Добавление фотографии</h1>
     <form action="/add-photo" method="post" enctype="multipart/form-data">
         <label for="title">Название</label>
         <input type="text" name="title" id="title" required>
@@ -39,5 +48,6 @@
 
         <input type="submit" value="Добавить">
     </form>
+
 </body>
 </html>

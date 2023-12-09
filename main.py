@@ -8,6 +8,7 @@ import psycopg2
 # Создаем приложение Flask
 app = flask.Flask(__name__)
 
+
 # Авторизация
 @app.route('/login')
 def login():

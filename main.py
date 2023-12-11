@@ -1,4 +1,3 @@
-import flask
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 
@@ -20,11 +19,13 @@ import psycopg2
 # Авторизация
 @app.route('/login')
 def login():
+    """ Renders the login page """
     return render_template('login.html')
 
 
 @app.route('/login', methods=['POST'])
 def login_post():
+    """ Processing request for login form """
     email = request.form['email']
     password = request.form['password']
     remember = True if request.form.get('remember') else False
@@ -43,11 +44,13 @@ def login_post():
 
 @app.route('/signup')
 def signup():
+    """ renders the signup page """
     return render_template('signup.html')
 
 
 @app.route('/signup', methods=['POST'])
 def signup_post():
+    """ Processing request for signup form """
     email = request.form['email']
     name = request.form['name']
     password = request.form['password']
@@ -64,6 +67,7 @@ def signup_post():
 @app.route('/logout')
 @login_required
 def logout():
+    """ Logs out the user and redirects to the login page """
     logout_user()
     return redirect(url_for('index'))
 # Конец Авторизация

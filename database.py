@@ -2,6 +2,7 @@ import psycopg2
 from flask_login import LoginManager
 
 # Данные для подключения к базе данных
+# -- Пока что нет команды на создание базы при ее отсутсвии, но будет --
 conn_param = {
     'dbname': "photohub",
     'user': "postgres",
@@ -12,7 +13,9 @@ conn_param = {
 
 
 def init(conn_param: dict) -> None:
-    # # Создаем объект подключения
+    """ Создаем таблицу в базе данных проекта """
+
+    # Подключение
     conn = psycopg2.connect(**conn_param)
     cursor = conn.cursor()
     conn.autocommit = True  # устанавливаем авто коммит

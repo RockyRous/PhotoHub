@@ -99,6 +99,18 @@ def add_author(name: str, email: str, password: str) -> None:
         print('New author added')
 
 
+def get_user(user_id: int) -> list:
+    conn = psycopg2.connect(**conn_param)
+    with conn.cursor() as cursor:
+        query = f'SELECT * FROM author WHERE id = {user_id} LIMIT 1'
+        cursor.execute(query)
+        res = cursor.fetchone()
+        if res:
+            return res
+        else:
+            print('Пользователь не найден')
+            return False
+
 # def create_login():
 #     login_manager = LoginManager()
 #     login_manager.login_view = 'auth.login'
@@ -110,8 +122,8 @@ def add_author(name: str, email: str, password: str) -> None:
 
 
 if __name__ == '__main__':
-    # init(conn_param)
+    init(conn_param)
 
-    # testing
-    # add_author("Popka", "jopka", "123")
-    # get_author_from_db('admin@admin.admin', 'admin')
+# testing
+# add_author("Popka", "jopka", "123")
+# get_author_from_db('admin@admin.admin', 'admin')

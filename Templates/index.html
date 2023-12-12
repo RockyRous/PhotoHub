@@ -13,6 +13,8 @@
                 <h3>{{ photo[1] }}</h3>
                 <h3>{{ photo }}</h3>
 
+
+                {% if current_user.is_authenticated %}
                 <!-- Удаление из базы данных -->
                 <form action="/delete-photo/{{ photo[0] }}" method="post">
                     <input type="hidden" name="id" value="{{ photo[0] }}">
@@ -26,11 +28,12 @@
                     <input type="hidden" name="id" value="{{ photo[0] }}">
                     <input type="submit" value="Сохранить">
                 </form>
+                {% endif %}
 
             </li>
         {% endfor %}
     </ul>
-
+    {% if current_user.is_authenticated %}
     <!--  Создание новой записи в бд  -->
     <h1>Добавление фотографии</h1>
     <form action="/add-photo" method="post" enctype="multipart/form-data">
@@ -43,6 +46,8 @@
         <label for="image">Ссылка на изображение</label>
         <input type="text" name="image" id="image" required>
 
+
         <input type="submit" value="Добавить">
     </form>
+    {% endif %}
 {% endblock %}

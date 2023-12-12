@@ -2,27 +2,23 @@ from flask import render_template, request, redirect, url_for, flash, Flask
 from flask_login import login_user, logout_user, login_required, current_user, LoginManager
 
 import database as db
+from UserLogin import UserLogin
 import psycopg2
 
 
 # Создаем приложение Flask
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'MY_SECRET_KEY'
 login_manager = LoginManager(app)
 # Подключаемся к базе данных
 conn = psycopg2.connect(**db.conn_param)
 
 
-# # Подключаемся к базе данных
-# conn = psycopg2.connect(**db.conn_param)
-# cursor = conn.cursor()
+@login_manager.user_loader
+def load_user(user_id):
+    print('load user')
+    return UserLogin().fromDB(user_id, db)
 
-# # test
-# login_manager = LoginManager()
-# login_manager.login_view = 'auth.login'
-# @login_manager.user_loader
-# def load_user(user_id):
-#     # Тут возвращаем данные юзера по его user_id
-#     return ''
 
 # Авторизация
 @app.route('/login')
@@ -45,11 +41,13 @@ def login_post():
         flash('Please check your login details and try again.')
         return redirect(url_for('login'))
     else:
-        user.pop(0)
         # user = ['email', 'name', 'password'] - было в описании
-        # user = ['name', 'email', 'password'] - у меня
+        # user = ['id', 'name', 'email', 'password'] - у меня
 
-        login_user(user, remember=remember)
+        # Оборачиваем user в userlogin
+        userlogin = UserLogin().create(user)
+
+        login_user(userlogin, remember=remember)
         return redirect(url_for('index'))
 
 
@@ -78,7 +76,7 @@ def signup_post():
 @login_required  # Доступ только авторизованым юсерам
 def logout():
     """ Logs out the user and redirects to the login page """
-    # logout_user()
+    logout_user()
     return redirect(url_for('index'))
 # Конец Авторизация
 

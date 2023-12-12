@@ -46,6 +46,59 @@ def init(conn_param: dict) -> None:
     conn.close()
 
 
+def get_author_from_db(email: str, password: str) -> list[int, str, str, str]:
+    """ Connect db and get author \n
+    :return list of author or None \n
+    ex: (id: int, name: str, emain: str, password: str) """
+    # Подключаемся к базе данных
+    conn = psycopg2.connect(**conn_param)
+
+    with conn.cursor() as cursor:
+        # запрос
+        query = "SELECT * FROM author WHERE email = %s AND password = %s;"
+
+        cursor.execute(query, (email, password))
+        result = cursor.fetchone()
+
+        # Если результат не равен None, то email и пароль существуют в базе данных
+        if result is not None:
+            print(result)
+            return result
+        else:
+            print("Email и пароль не найдены в базе данных")
+            return None
+
+
+def is_email_free(email: str) -> bool:
+    """ Is email free? \n
+    :return True or False """
+    # Подключаемся к базе данных
+    conn = psycopg2.connect(**conn_param)
+
+    with conn.cursor() as cursor:
+        # запрос
+        query = "SELECT * FROM author WHERE email = %s"
+
+        cursor.execute(query, (email,))
+        result = cursor.fetchone()
+
+        # Если результат не равен None, то email существуют в базе данных
+        if result:
+            return False
+        else:
+            return True
+
+
+def add_author(name: str, email: str, password: str) -> None:
+    """ Adds an author """
+    conn = psycopg2.connect(**conn_param)
+    with conn.cursor() as cursor:
+        query = "INSERT INTO author(name, email, password) VALUES(%s, %s, %s);"
+        cursor.execute(query, (name, email, password))
+        conn.commit()
+        print('New author added')
+
+
 # def create_login():
 #     login_manager = LoginManager()
 #     login_manager.login_view = 'auth.login'
@@ -57,5 +110,8 @@ def init(conn_param: dict) -> None:
 
 
 if __name__ == '__main__':
-    init(conn_param)
-    # create_login()
+    # init(conn_param)
+
+    # testing
+    # add_author("Popka", "jopka", "123")
+    # get_author_from_db('admin@admin.admin', 'admin')
